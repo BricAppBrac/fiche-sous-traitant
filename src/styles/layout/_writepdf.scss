@@ -1,0 +1,28 @@
+.generate-content {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  p {
+    font-size: 1.4rem;
+    color: $brown;
+    background: $orange;
+    padding: 5px;
+    margin: 15px auto;
+    text-align: center;
+    border-radius: 20px;
+  }
+
+  .generate-button {
+    text-align: center;
+
+    button {
+      width: fit-content;
+      padding: 5px;
+      border-radius: 20px;
+      font-size: 1.4rem;
+      margin: 0 20px;
+      background: $green1;
+      color: $brown;
+    }
+  }
+}
