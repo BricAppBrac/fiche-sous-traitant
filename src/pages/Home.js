@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import WritePdf from "../components/WritePdf";
 
 const Home = () => {
+  const [imageNameCoord, setImageNameCoord] = useState("");
+  const [imageNameMat1, setImageNameMat1] = useState("");
+  const [imageNameMat2, setImageNameMat2] = useState("");
+
+  const [fileInputKeyCoord, setFileInputKeyCoord] = useState(0);
+  const [fileInputKeyMat1, setFileInputKeyMat1] = useState(0);
+  const [fileInputKeyMat2, setFileInputKeyMat2] = useState(0);
+
   const [inputTravaux, setInputTravaux] = useState(["", "", "", "", ""]);
   const [tx1, setTx1] = useState("");
   const [tx2, setTx2] = useState("");
@@ -47,8 +55,6 @@ const Home = () => {
   const [imageMat1, setImageMat1] = useState(null);
   const [imageMat2, setImageMat2] = useState(null);
 
-  const [fileInputKey, setFileInputKey] = useState(0);
-
   useEffect(() => {
     // Défilement vers le haut de la page au chargement
     window.scrollTo(0, 0);
@@ -86,7 +92,12 @@ const Home = () => {
     setImageCoord(null);
     setImageMat1(null);
     setImageMat2(null);
-    setFileInputKey((prevKey) => prevKey + 1);
+    setImageNameCoord(null);
+    setImageNameMat1(null);
+    setImageNameMat2(null);
+    setFileInputKeyCoord(0);
+    setFileInputKeyMat1(0);
+    setFileInputKeyMat2(0);
   };
 
   const handleTravaux = (travaux, index) => {
@@ -200,6 +211,7 @@ const Home = () => {
     console.log("handleImageCoordChange :");
     console.log(e.target.files[0]);
     const file = e.target.files[0];
+
     if (file) {
       const reader = new FileReader();
 
@@ -208,6 +220,8 @@ const Home = () => {
 
         // Pass the imageDataUrl to WritePdf component
         setImageCoord(imageDataUrl);
+        // Set the file name
+        setImageNameCoord(file.name);
       };
 
       reader.readAsDataURL(file);
@@ -226,6 +240,8 @@ const Home = () => {
 
         // Pass the imageDataUrl to WritePdf component
         setImageMat1(imageDataUrl);
+        // Set the file name
+        setImageNameMat1(file.name);
       };
 
       reader.readAsDataURL(file);
@@ -244,10 +260,34 @@ const Home = () => {
 
         // Pass the imageDataUrl to WritePdf component
         setImageMat2(imageDataUrl);
+        // Set the file name
+        setImageNameMat2(file.name);
       };
 
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleDeleteImageCoord = () => {
+    console.log("delete file coord");
+    setImageCoord(null);
+    setImageNameCoord(null);
+    // Force a re-render by updating the key
+    setFileInputKeyCoord((prevKey) => prevKey + 1);
+  };
+
+  const handleDeleteImageMat1 = () => {
+    setImageMat1(null);
+    setImageNameMat1(null);
+    // Force a re-render by updating the key
+    setFileInputKeyMat1((prevKey) => prevKey + 1);
+  };
+
+  const handleDeleteImageMat2 = () => {
+    setImageMat2(null);
+    setImageNameMat2(null);
+    // Force a re-render by updating the key
+    setFileInputKeyMat2((prevKey) => prevKey + 1);
   };
 
   let content = (
@@ -357,15 +397,20 @@ const Home = () => {
           <h3>**********************************</h3>
 
           <div className="image">
-            <label htmlFor="imagecoord">Sélectionnez une image :</label>
-            <input
-              key={fileInputKey}
-              type="file"
-              id="imagecoord"
-              accept="image/*"
-              onChange={handleImageCoordChange}
-            />
-            {imageCoord && (
+            {imageCoord === null && (
+              <>
+                <label htmlFor="imagecoord">Sélectionnez une image :</label>
+                <input
+                  key={`imageCoord-${fileInputKeyCoord}`}
+                  type="file"
+                  id="imagecoord"
+                  accept="image/*"
+                  onChange={handleImageCoordChange}
+                />
+              </>
+            )}
+
+            {imageCoord !== null && (
               <div>
                 <h3>Aperçu de l'image :</h3>
                 <img
@@ -373,6 +418,14 @@ const Home = () => {
                   alt="Selected"
                   style={{ maxWidth: "50%" }}
                 />
+                <p>Nom du fichier : {imageNameCoord}</p>
+                <button
+                  onClick={() => {
+                    handleDeleteImageCoord();
+                  }}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
               </div>
             )}
           </div>
@@ -466,15 +519,19 @@ const Home = () => {
             }}
           />
           <div className="image">
-            <label htmlFor="imageMat1">Sélectionnez une image :</label>
-            <input
-              key={fileInputKey}
-              type="file"
-              id="imageMat1"
-              accept="image/*"
-              onChange={handleImageMat1Change}
-            />
-            {imageMat1 && (
+            {imageMat1 === null && (
+              <>
+                <label htmlFor="imageMat1">Sélectionnez une image :</label>
+                <input
+                  key={`imageMat1-${fileInputKeyMat1}`}
+                  type="file"
+                  id="imageMat1"
+                  accept="image/*"
+                  onChange={handleImageMat1Change}
+                />
+              </>
+            )}
+            {imageMat1 !== null && (
               <div>
                 <h3>Aperçu de l'image :</h3>
                 <img
@@ -482,19 +539,31 @@ const Home = () => {
                   alt="Selected"
                   style={{ maxWidth: "50%" }}
                 />
+                <p>Nom du fichier : {imageNameMat1}</p>
+                <button
+                  onClick={() => {
+                    handleDeleteImageMat1();
+                  }}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
               </div>
             )}
           </div>
           <div className="image">
-            <label htmlFor="imageMat2">Sélectionnez une image :</label>
-            <input
-              key={fileInputKey}
-              type="file"
-              id="imageMat2"
-              accept="image/*"
-              onChange={handleImageMat2Change}
-            />
-            {imageMat2 && (
+            {imageMat2 === null && (
+              <>
+                <label htmlFor="imageMat2">Sélectionnez une image :</label>
+                <input
+                  key={`imageMat2-${fileInputKeyMat2}`}
+                  type="file"
+                  id="imageMat2"
+                  accept="image/*"
+                  onChange={handleImageMat2Change}
+                />
+              </>
+            )}
+            {imageMat2 !== null && (
               <div>
                 <h3>Aperçu de l'image :</h3>
                 <img
@@ -502,6 +571,14 @@ const Home = () => {
                   alt="Selected"
                   style={{ maxWidth: "50%" }}
                 />
+                <p>Nom du fichier : {imageNameMat2}</p>
+                <button
+                  onClick={() => {
+                    handleDeleteImageMat2();
+                  }}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
               </div>
             )}
           </div>
